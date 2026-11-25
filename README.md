@@ -45,7 +45,7 @@ vite.config.ts       Build config
 **Cloudflare Pages:** build command `npm run build`, output folder `dist`. `public/_redirects` handles page routes.
 
 **GitHub Pages:** in repo Settings → Pages, set Source to "GitHub Actions". Each push to `main` deploys.
-The workflow builds with `BASE_PATH=/<repo>/`. With a custom domain, change it to `/`.
+The site uses a custom domain (`public/CNAME`), so the workflow builds with `BASE_PATH=/`.
 
 ## Credits
 

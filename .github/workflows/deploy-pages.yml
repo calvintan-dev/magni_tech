@@ -1,6 +1,6 @@
 # Builds the site and publishes it to GitHub Pages on every push to main.
 # One-time setup: repo Settings -> Pages -> Source: "GitHub Actions".
-# Using a custom domain? Set BASE_PATH to "/" below.
+# Served from the client's custom domain (public/CNAME), so the site lives at "/".
 name: Deploy to GitHub Pages
 
 on:
@@ -29,7 +29,7 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          BASE_PATH: /${{ github.event.repository.name }}/
+          BASE_PATH: /
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

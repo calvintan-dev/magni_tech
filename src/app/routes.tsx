@@ -13,7 +13,17 @@ import { MAP_HEIGHT, MAP_WIDTH, mapCountryLabels, mapLand, mapLocations, mapRout
 
 type Language = 'en' | 'zh-CN' | 'zh-HK';
 type Copy = [string, string, string];
-type IconName = 'arrow' | 'box' | 'check' | 'chevron' | 'clock' | 'globe' | 'menu' | 'plane' | 'route' | 'search' | 'ship' | 'truck' | 'warehouse' | 'x';
+type IconName = 'arrow' | 'box' | 'check' | 'chevron' | 'clock' | 'globe' | 'menu' | 'plane' | 'route' | 'search' | 'ship' | 'truck' | 'warehouse' | 'whatsapp' | 'x' | 'chip' | 'gear' | 'cart' | 'snow' | 'crane';
+
+// WhatsApp click-to-chat. Number in international format, digits only.
+// PLACEHOLDER: uses the office line until the client confirms a WhatsApp number.
+const WHATSAPP_NUMBER = '85239052188';
+const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+const whatsappGreeting: Copy = [
+  'Hello Magni, I would like to ask about a shipment.',
+  '您好 Magni，我想咨询货运服务。',
+  '您好 Magni，我想查詢貨運服務。',
+];
 
 const LanguageContext = createContext<{ language: Language; setLanguage: (language: Language) => void }>({
   language: 'en',
@@ -35,6 +45,12 @@ const iconPaths: Record<IconName, ReactNode> = {
   truck: <><path d="M3 6h11v10H3zM14 10h4l3 3v3h-7z" /><circle cx="7" cy="18" r="2" /><circle cx="18" cy="18" r="2" /></>,
   warehouse: <><path d="m3 9 9-6 9 6v11H3V9Z" /><path d="M7 20v-7h10v7M7 9h.01M12 9h.01M17 9h.01" /></>,
   x: <path d="M5 5l14 14M19 5 5 19" />,
+  chip: <><rect x="6" y="6" width="12" height="12" rx="1" /><path d="M10 10h4v4h-4zM9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4" /></>,
+  gear: <><path d="m9 3 1-2h4l1 2 3 2 2 1 2 4-2 2v3l-1 3-4 2-2-1-3 1-3-2-3-1-1-4 1-2V8l3-3 2-2Z" /><circle cx="12" cy="11" r="4" /></>,
+  cart: <><path d="M2 3h3l3 13h12l2-9H6" /><circle cx="9" cy="20" r="1" /><circle cx="18" cy="20" r="1" /></>,
+  snow: <path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 3 3-3M9 20l3-3 3 3M4 10l4-1-1-4M17 19l-1-4 4-1M4 14l4 1-1 4M17 5l-1 4 4 1" />,
+  crane: <path d="M3 22V3h18M6 3l12 8H3l12-8M7 11v11M3 22h8M18 3v13M16 16h4v4h-4z" />,
+  whatsapp: <><path d="M3.5 20.5 4.8 16A8.5 8.5 0 1 1 8 19.2l-4.5 1.3Z" /><path d="M9.2 8.2c-.3 3.4 3.2 6.9 6.6 6.6l.9-1.6-1.9-1-1 .9a4.8 4.8 0 0 1-2.6-2.6l.9-1-1-1.9-1.9.6Z" /></>,
 };
 
 function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
@@ -58,11 +74,11 @@ const services = [
 ];
 
 const solutions = [
-  { id: 'electronics', name: ['Electronics & technology', '电子及科技', '電子及科技'] as Copy, text: ['Secure handling for high-value, time-critical cargo.', '为高价值、时效敏感货物提供安全操作。', '為高價值、時效敏感貨物提供安全操作。'] as Copy },
-  { id: 'auto-machinery', name: ['Automotive & machinery', '汽车及机械', '汽車及機械'] as Copy, text: ['Dependable inbound parts and project movement.', '可靠的零部件进口及项目物流。', '可靠的零部件進口及項目物流。'] as Copy },
-  { id: 'ecommerce', name: ['Cross-border e-commerce', '跨境电商', '跨境電商'] as Copy, text: ['Flexible first-mile and regional fulfilment.', '灵活的头程及区域履约方案。', '靈活的頭程及區域履約方案。'] as Copy },
-  { id: 'fmcg-cold-chain', name: ['Consumer & cold chain', '快消及冷链', '快消及冷鏈'] as Copy, text: ['Controlled movement for fast-moving and sensitive goods.', '为快消及敏感货物提供可控运输。', '為快消及敏感貨物提供可控運輸。'] as Copy },
-  { id: 'project-logistics', name: ['Project logistics', '项目物流', '項目物流'] as Copy, text: ['Route planning and coordination for complex cargo.', '为复杂货物提供路线规划及协同。', '為複雜貨物提供路線規劃及協同。'] as Copy },
+  { id: 'electronics', icon: 'chip' as IconName, name: ['Electronics & technology', '电子及科技', '電子及科技'] as Copy, text: ['Secure handling for high-value, time-critical cargo.', '为高价值、时效敏感货物提供安全操作。', '為高價值、時效敏感貨物提供安全操作。'] as Copy },
+  { id: 'auto-machinery', icon: 'gear' as IconName, name: ['Automotive & machinery', '汽车及机械', '汽車及機械'] as Copy, text: ['Dependable inbound parts and project movement.', '可靠的零部件进口及项目物流。', '可靠的零部件進口及項目物流。'] as Copy },
+  { id: 'ecommerce', icon: 'cart' as IconName, name: ['Cross-border e-commerce', '跨境电商', '跨境電商'] as Copy, text: ['Flexible first-mile and regional fulfilment.', '灵活的头程及区域履约方案。', '靈活的頭程及區域履約方案。'] as Copy },
+  { id: 'fmcg-cold-chain', icon: 'snow' as IconName, name: ['Consumer & cold chain', '快消及冷链', '快消及冷鏈'] as Copy, text: ['Controlled movement for fast-moving and sensitive goods.', '为快消及敏感货物提供可控运输。', '為快消及敏感貨物提供可控運輸。'] as Copy },
+  { id: 'project-logistics', icon: 'crane' as IconName, name: ['Project logistics', '项目物流', '項目物流'] as Copy, text: ['Route planning and coordination for complex cargo.', '为复杂货物提供路线规划及协同。', '為複雜貨物提供路線規劃及協同。'] as Copy },
 ];
 
 type LayoutContext = { openQuote: () => void };
@@ -152,6 +168,7 @@ function TranslatedLayout({ menuOpen, setMenuOpen, languageOpen, setLanguageOpen
         </nav>
       </header>
       <main><Outlet context={{ openQuote }} /></main>
+      <a className="whatsapp-float" href={whatsappLink(t(whatsappGreeting))} target="_blank" rel="noopener noreferrer" aria-label={t(['Chat with us on WhatsApp', '通过 WhatsApp 联系我们', '透過 WhatsApp 聯絡我們'])} title="WhatsApp"><Icon name="whatsapp" size={26} /></a>
       <Footer />
     </div>
   );
@@ -163,9 +180,9 @@ function Footer() {
     <div className="container footer-main">
       <div className="footer-brand"><Brand inverse /><p>{t(['Integrated logistics across China, Hong Kong and Southeast Asia.', '连接中国内地、香港及东南亚的一体化物流服务。', '連接中國內地、香港及東南亞的一體化物流服務。'])}</p></div>
       <div className="footer-nav"><strong>{t(['Explore', '探索', '探索'])}</strong><Link to="/services">{t(['Services', '服务', '服務'])}</Link><Link to="/network">{t(['Network', '网络覆盖', '網絡覆蓋'])}</Link><Link to="/about">{t(['About us', '关于我们', '關於我們'])}</Link></div>
-      <div className="footer-nav"><strong>{t(['Contact', '联系', '聯絡'])}</strong><a href="tel:+85239052188">+852 3905 2188</a><a href="mailto:hello@magni-logistics.com">hello@magni-logistics.com</a><span>{t(['Hong Kong SAR', '中国香港特别行政区', '中國香港特別行政區'])}</span></div>
+      <div className="footer-nav"><strong>{t(['Contact', '联系', '聯絡'])}</strong><a href="tel:+85239052188">+852 3905 2188</a><a href="mailto:hello@magni-logistics.com">hello@magni-logistics.com</a><a className="whatsapp-link" href={whatsappLink(t(whatsappGreeting))} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={15} />WhatsApp</a><span>{t(['Hong Kong SAR', '中国香港特别行政区', '中國香港特別行政區'])}</span></div>
     </div>
-    <div className="container footer-bottom"><span>© 2026 Magni Technology Limited</span><div><span>{t(['Privacy', '隐私', '私隱'])}</span><span>{t(['Terms', '条款', '條款'])}</span><span>English / 简体中文 / 繁體中文</span></div></div>
+    <div className="container footer-bottom"><span>© 2026 Magni Technology Limited</span><nav aria-label={t(['Legal', '法律信息', '法律資訊'])}>{legalPages.map((page) => <Link key={page.id} to={`/legal/${page.id}`}>{t(page.name)}</Link>)}</nav></div>
   </footer>;
 }
 
@@ -200,9 +217,10 @@ function Home() {
     <section className="section services-section"><div className="container">
       <div className="section-heading"><div><p className="eyebrow">{t(['What we move', '运输服务', '運輸服務'])}</p><h2>{t(['One partner. Every link in the chain.', '一个伙伴，贯通供应链每一环。', '一個夥伴，貫通供應鏈每一環。'])}</h2></div><p>{t(['From a single pallet to a complex regional programme, we coordinate the details that keep your business moving.', '从单个托盘到复杂区域项目，我们协调每个细节，确保业务持续运转。', '從單個托盤到複雜區域項目，我們協調每個細節，確保業務持續運轉。'])}</p></div>
       <div className="services-grid">{services.slice(0, 4).map((service, index) => <article className="service-card" key={service.id}><div className="service-top"><span>0{index + 1}</span><Icon name={service.icon} size={31} /></div><div><small>{t(service.name)}</small><h3>{t(service.name)}</h3><p>{t(service.intro)}</p></div><Link to={`/services/${service.id}`}><span>{t(['Explore service', '查看服务', '查看服務'])}</span><Icon name="arrow" size={18} /></Link></article>)}</div>
+      <div className="section-more"><Link className="text-button dark-link" to="/services">{t(['Explore all services', '查看全部服务', '查看全部服務'])}<Icon name="arrow" size={17} /></Link></div>
     </div></section>
     <section className="home-map-section"><div className="container home-map-grid"><div><p className="eyebrow">{t(['Our network', '网络覆盖', '網絡覆蓋'])}</p><h2>{t(['Local knowledge. Regional reach.', '本地经验，区域覆盖。', '本地經驗，區域覆蓋。'])}</h2><p>{t(['Our Hong Kong team connects manufacturing centres in China with major markets across Southeast Asia.', '香港团队连接中国制造中心与东南亚主要市场。', '香港團隊連接中國製造中心與東南亞主要市場。'])}</p><Link className="text-button dark-link" to="/network">{t(['Explore the network', '查看完整网络', '查看完整網絡'])}<Icon name="arrow" size={17} /></Link></div><NetworkMap compact /></div></section>
-    <section className="section industries-section"><div className="container"><div className="section-heading compact"><div><p className="eyebrow">{t(['Industry solutions', '行业解决方案', '行業解決方案'])}</p><h2>{t(['Built around your cargo.', '围绕您的货物而设计。', '圍繞您的貨物而設計。'])}</h2></div><Link className="text-button dark-link" to="/solutions">{t(['View all solutions', '查看所有方案', '查看所有方案'])}<Icon name="arrow" size={17} /></Link></div><div className="industry-grid">{solutions.slice(0, 4).map((solution, index) => <Link className="industry-item" to={`/solutions/${solution.id}`} key={solution.id}><span>0{index + 1}</span><div><h3>{t(solution.name)}</h3><p>{t(solution.text)}</p></div><Icon name="arrow" size={20} /></Link>)}</div></div></section>
+    <section className="section industries-section"><div className="container"><div className="section-heading compact"><div><p className="eyebrow">{t(['Industry solutions', '行业解决方案', '行業解決方案'])}</p><h2>{t(['Built around your cargo.', '围绕您的货物而设计。', '圍繞您的貨物而設計。'])}</h2></div><Link className="text-button dark-link" to="/solutions">{t(['View all solutions', '查看所有方案', '查看所有方案'])}<Icon name="arrow" size={17} /></Link></div><div className="industry-grid">{solutions.map((solution, index) => <Link className="industry-item" to={`/solutions/${solution.id}`} key={solution.id}><span>0{index + 1}</span><span className="industry-icon"><Icon name={solution.icon} size={28} /></span><div><h3>{t(solution.name)}</h3><p>{t(solution.text)}</p></div><Icon name="arrow" size={20} /></Link>)}</div></div></section>
     <CallToAction />
   </>;
 }
@@ -257,7 +275,7 @@ function SolutionDetail() {
   const { openQuote } = useLayout();
   const solution = solutions.find((item) => item.id === solutionId);
   if (!solution) return <NotFound />;
-  return <><PageHero eyebrow={t(['Industry solution', '行业方案', '行業方案'])} title={t(solution.name)} intro={t(solution.text)} /><section className="detail-section"><div className="container detail-layout"><aside><p>{t(['Industries', '行业', '行業'])}</p>{solutions.map((item) => <NavLink key={item.id} to={`/solutions/${item.id}`}>{t(item.name)}</NavLink>)}</aside><article className="detail-content"><p className="detail-lead">{t(['Your supply chain must protect product integrity while keeping inventory, cost and delivery promises in balance. We build the operating model around those realities.', '您的供应链必须在保障产品完整性的同时，平衡库存、成本及交付承诺。我们围绕这些实际需求构建运营模式。', '您的供應鏈必須在保障產品完整性的同時，平衡庫存、成本及交付承諾。我們圍繞這些實際需求構建營運模式。'])}</p><h2>{t(['A connected approach', '一体化方案', '一體化方案'])}</h2><div className="feature-columns"><div><Icon name="route" size={27} /><h3>{t(['Route resilience', '路线韧性', '路線韌性'])}</h3><p>{t(['Primary and alternative routing planned from the start.', '从一开始便规划主要及备用路线。', '從一開始便規劃主要及備用路線。'])}</p></div><div><Icon name="box" size={27} /><h3>{t(['Cargo controls', '货物管控', '貨物管控'])}</h3><p>{t(['Handling instructions aligned across every partner.', '所有合作伙伴遵循统一操作指引。', '所有合作夥伴遵循統一操作指引。'])}</p></div><div><Icon name="clock" size={27} /><h3>{t(['Milestone clarity', '节点清晰', '節點清晰'])}</h3><p>{t(['Proactive updates before issues affect delivery.', '在问题影响交付前主动更新。', '在問題影響交付前主動更新。'])}</p></div></div><button className="button button-accent" onClick={openQuote}>{t(['Discuss your requirements', '讨论您的需求', '商討您的需求'])}<Icon name="arrow" size={17} /></button></article></div></section></>;
+  return <><PageHero eyebrow={t(['Industry solution', '行业方案', '行業方案'])} title={t(solution.name)} intro={t(solution.text)} /><section className="detail-section"><div className="container detail-layout"><aside><p>{t(['Industries', '行业', '行業'])}</p>{solutions.map((item) => <NavLink key={item.id} to={`/solutions/${item.id}`}><Icon name={item.icon} size={17} />{t(item.name)}</NavLink>)}</aside><article className="detail-content"><p className="detail-lead">{t(['Your supply chain must protect product integrity while keeping inventory, cost and delivery promises in balance. We build the operating model around those realities.', '您的供应链必须在保障产品完整性的同时，平衡库存、成本及交付承诺。我们围绕这些实际需求构建运营模式。', '您的供應鏈必須在保障產品完整性的同時，平衡庫存、成本及交付承諾。我們圍繞這些實際需求構建營運模式。'])}</p><h2>{t(['A connected approach', '一体化方案', '一體化方案'])}</h2><div className="feature-columns"><div><Icon name="route" size={27} /><h3>{t(['Route resilience', '路线韧性', '路線韌性'])}</h3><p>{t(['Primary and alternative routing planned from the start.', '从一开始便规划主要及备用路线。', '從一開始便規劃主要及備用路線。'])}</p></div><div><Icon name="box" size={27} /><h3>{t(['Cargo controls', '货物管控', '貨物管控'])}</h3><p>{t(['Handling instructions aligned across every partner.', '所有合作伙伴遵循统一操作指引。', '所有合作夥伴遵循統一操作指引。'])}</p></div><div><Icon name="clock" size={27} /><h3>{t(['Milestone clarity', '节点清晰', '節點清晰'])}</h3><p>{t(['Proactive updates before issues affect delivery.', '在问题影响交付前主动更新。', '在問題影響交付前主動更新。'])}</p></div></div><button className="button button-accent" onClick={openQuote}>{t(['Discuss your requirements', '讨论您的需求', '商討您的需求'])}<Icon name="arrow" size={17} /></button></article></div></section></>;
 }
 
 const offices = [
@@ -313,7 +331,7 @@ function AboutPage() {
 
 function ContactPage() {
   const { t } = useI18n();
-  return <><PageHero eyebrow={t(['Contact', '联系我们', '聯絡我們'])} title={t(['Talk to a logistics specialist.', '与物流专员沟通。', '與物流專員溝通。'])} intro={t(['Our Hong Kong team is ready to help with your next move.', '我们的香港团队随时协助您的下一票货运。', '我們的香港團隊隨時協助您的下一票貨運。'])} /><section className="section"><div className="container contact-grid"><div className="contact-card"><p className="eyebrow">{t(['Hong Kong office', '香港办公室', '香港辦公室'])}</p><h2>Magni Technology Limited</h2><p>{t(['Hong Kong SAR', '中国香港特别行政区', '中國香港特別行政區'])}</p><a href="tel:+85239052188">+852 3905 2188</a><a href="mailto:hello@magni-logistics.com">hello@magni-logistics.com</a><span>{t(['Mon–Fri · 09:00–18:00 HKT', '周一至周五 · 09:00–18:00 香港时间', '週一至週五 · 09:00–18:00 香港時間'])}</span></div><ContactForm /></div></section></>;
+  return <><PageHero eyebrow={t(['Contact', '联系我们', '聯絡我們'])} title={t(['Talk to a logistics specialist.', '与物流专员沟通。', '與物流專員溝通。'])} intro={t(['Our Hong Kong team is ready to help with your next move.', '我们的香港团队随时协助您的下一票货运。', '我們的香港團隊隨時協助您的下一票貨運。'])} /><section className="section"><div className="container contact-grid"><div className="contact-card"><p className="eyebrow">{t(['Hong Kong office', '香港办公室', '香港辦公室'])}</p><h2>Magni Technology Limited</h2><p>{t(['Hong Kong SAR', '中国香港特别行政区', '中國香港特別行政區'])}</p><a href="tel:+85239052188">+852 3905 2188</a><a href="mailto:hello@magni-logistics.com">hello@magni-logistics.com</a><a className="button button-whatsapp" href={whatsappLink(t(whatsappGreeting))} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={18} />{t(['Chat on WhatsApp', 'WhatsApp 咨询', 'WhatsApp 查詢'])}</a><span>{t(['Mon–Fri · 09:00–18:00 HKT', '周一至周五 · 09:00–18:00 香港时间', '週一至週五 · 09:00–18:00 香港時間'])}</span></div><ContactForm /></div></section></>;
 }
 
 function ContactForm() {
@@ -333,6 +351,52 @@ function CallToAction() {
   const { t } = useI18n();
   const { openQuote } = useLayout();
   return <section className="cta-section"><div className="container cta-inner"><div><p className="eyebrow">{t(['Let’s move', '启程', '啟程'])}</p><h2>{t(['Where can we take your business next?', '下一程，与您共创业务新篇章。', '下一程，與您共創業務新篇章。'])}</h2></div><div className="cta-action"><p>{t(['Tell us what you need to move. Our team will respond with a practical route and clear next steps.', '告诉我们您的运输需求，我们将提供切实可行的路线及清晰的后续步骤。', '告訴我們您的運輸需求，我們將提供切實可行的路線及清晰的後續步驟。'])}</p><button className="button button-accent" onClick={openQuote}>{t(['Start a conversation', '开始咨询', '開始諮詢'])}<Icon name="arrow" size={18} /></button></div></div></section>;
+}
+
+// Legal pages (brief: footer must link 隐私政策 / 服务条款 / 标准交易条款).
+// DRAFT structure only: final wording must come from the client and their legal adviser.
+const legalPages: { id: string; name: Copy; intro: Copy; sections: Array<{ title: Copy; body: Copy }> }[] = [
+  {
+    id: 'privacy',
+    name: ['Privacy Policy', '隐私政策', '私隱政策'],
+    intro: ['How Magni Technology Limited collects, uses and protects personal data.', 'Magni Technology Limited 如何收集、使用及保护个人资料。', 'Magni Technology Limited 如何收集、使用及保障個人資料。'],
+    sections: [
+      { title: ['1. Data we collect', '1. 我们收集的资料', '1. 我們收集的資料'], body: ['Contact details and shipment information you submit through our quote, contact and tracking forms.', '您通过询价、联系及追踪表单提交的联系方式及货运资料。', '您透過詢價、聯絡及追蹤表格提交的聯絡資料及貨運資料。'] },
+      { title: ['2. How we use it', '2. 资料用途', '2. 資料用途'], body: ['To answer enquiries, prepare quotations and provide logistics services.', '用于回复咨询、准备报价及提供物流服务。', '用於回覆查詢、準備報價及提供物流服務。'] },
+      { title: ['3. Sharing and retention', '3. 资料共享及保存', '3. 資料披露及保存'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
+      { title: ['4. Your rights and contact', '4. 您的权利及联系方式', '4. 您的權利及聯絡方式'], body: ['Details pending client confirmation, in line with the Personal Data (Privacy) Ordinance (Cap. 486).', '具体内容待客户确认，并符合香港《个人资料（私隐）条例》（第486章）。', '具體內容待客戶確認，並符合《個人資料（私隱）條例》（第486章）。'] },
+    ],
+  },
+  {
+    id: 'terms',
+    name: ['Terms of Service', '服务条款', '服務條款'],
+    intro: ['The terms that apply when you use this website.', '使用本网站时适用的条款。', '使用本網站時適用的條款。'],
+    sections: [
+      { title: ['1. Use of this website', '1. 网站使用', '1. 網站使用'], body: ['Information on this website is for general reference and does not form a contract.', '本网站信息仅供一般参考，并不构成合同。', '本網站資訊僅供一般參考，並不構成合約。'] },
+      { title: ['2. Quotations', '2. 报价', '2. 報價'], body: ['Online enquiries are not binding. A quotation is confirmed only in writing by our team.', '网上询价不具约束力，报价以我们团队的书面确认为准。', '網上詢價不具約束力，報價以我們團隊的書面確認為準。'] },
+      { title: ['3. Liability', '3. 责任', '3. 責任'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
+      { title: ['4. Governing law', '4. 适用法律', '4. 適用法律'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
+    ],
+  },
+  {
+    id: 'trading-terms',
+    name: ['Standard Trading Conditions', '标准交易条款', '標準交易條款'],
+    intro: ['The conditions under which Magni Technology Limited handles all business.', 'Magni Technology Limited 承办所有业务时适用的条款。', 'Magni Technology Limited 承辦所有業務時適用的條款。'],
+    sections: [
+      { title: ['1. Scope', '1. 适用范围', '1. 適用範圍'], body: ['These conditions apply to all freight forwarding, customs, warehousing and related services we provide.', '本条款适用于我们提供的所有货运代理、报关、仓储及相关服务。', '本條款適用於我們提供的所有貨運代理、報關、倉儲及相關服務。'] },
+      { title: ['2. Customer obligations', '2. 客户责任', '2. 客戶責任'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
+      { title: ['3. Liability limits', '3. 责任限额', '3. 責任限額'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
+      { title: ['4. Claims and time limits', '4. 索赔及时限', '4. 索償及時限'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
+    ],
+  },
+];
+
+function LegalPage() {
+  const { t } = useI18n();
+  const { legalId } = useParams();
+  const page = legalPages.find((item) => item.id === legalId);
+  if (!page) return <NotFound />;
+  return <><PageHero eyebrow={t(['Legal', '法律信息', '法律資訊'])} title={t(page.name)} intro={t(page.intro)} /><section className="section"><div className="container detail-layout"><aside><p>{t(['Legal', '法律信息', '法律資訊'])}</p>{legalPages.map((item) => <NavLink key={item.id} to={`/legal/${item.id}`}>{t(item.name)}</NavLink>)}</aside><article className="legal-body"><p className="legal-note">{t(['Draft for review. Final text to be supplied by Magni Technology Limited.', '草稿待审阅，最终文本由 Magni Technology Limited 提供。', '草稿待審閱，最終文本由 Magni Technology Limited 提供。'])}</p>{page.sections.map((section) => <section key={section.title[0]}><h2>{t(section.title)}</h2><p>{t(section.body)}</p></section>)}</article></div></section></>;
 }
 
 function NotFound() {
@@ -355,6 +419,7 @@ export const router = createBrowserRouter([
       { path: 'about', Component: AboutPage },
       { path: 'contact', Component: ContactPage },
       { path: 'quote', Component: QuotePage },
+      { path: 'legal/:legalId', Component: LegalPage },
       { path: '*', Component: NotFound },
     ],
   },
