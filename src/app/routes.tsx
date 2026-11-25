@@ -10,6 +10,7 @@ import {
 } from 'react-router';
 import { FormEvent, ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { MAP_HEIGHT, MAP_WIDTH, mapCountryLabels, mapLand, mapLocations, mapRoutes } from './networkMapData';
+import { aboutContent, serviceDetails, solutionDetails } from './content';
 
 type Language = 'en' | 'zh-CN' | 'zh-HK';
 type Copy = [string, string, string];
@@ -66,12 +67,22 @@ function useI18n() {
 const services = [
   { id: 'sea', icon: 'ship' as IconName, name: ['Ocean freight', '海运服务', '海運服務'] as Copy, intro: ['Reliable FCL and LCL connections across Asia and key global ports.', '连接亚洲与全球主要港口的可靠整箱及拼箱服务。', '連接亞洲與全球主要港口的可靠整箱及拼箱服務。'] as Copy },
   { id: 'air', icon: 'plane' as IconName, name: ['Air freight', '空运服务', '空運服務'] as Copy, intro: ['Priority uplift and flexible routing for time-sensitive cargo.', '为时效敏感型货物提供优先舱位及灵活路线。', '為時效敏感型貨物提供優先艙位及靈活路線。'] as Copy },
-  { id: 'road', icon: 'truck' as IconName, name: ['Cross-border road', '跨境陆运', '跨境陸運'] as Copy, intro: ['Seamless trucking between Mainland China, Hong Kong and Southeast Asia.', '贯通中国内地、香港及东南亚的无缝陆运网络。', '貫通中國內地、香港及東南亞的無縫陸運網絡。'] as Copy },
+  { id: 'road', icon: 'truck' as IconName, name: ['Cross-border road', '跨境陆运', '跨境陸運'] as Copy, intro: ['Door-to-door trucking between Mainland China, Hong Kong and Southeast Asia.', '往返中国内地、香港及东南亚的门到门陆运。', '往返中國內地、香港及東南亞的門到門陸運。'] as Copy },
   { id: 'rail', icon: 'route' as IconName, name: ['Rail freight', '铁路运输', '鐵路運輸'] as Copy, intro: ['A balanced option for cost, capacity and transit time across Eurasia.', '兼顾欧亚运输成本、运力及时间的平衡方案。', '兼顧歐亞運輸成本、運力及時間的平衡方案。'] as Copy },
   { id: 'customs', icon: 'check' as IconName, name: ['Customs clearance', '报关清关', '報關清關'] as Copy, intro: ['Accurate documentation and local support at every border.', '在每个口岸提供准确单证及本地支持。', '在每個口岸提供準確單證及本地支援。'] as Copy },
   { id: 'warehouse', icon: 'warehouse' as IconName, name: ['Warehousing', '仓储配送', '倉儲配送'] as Copy, intro: ['Consolidation, inventory handling and regional fulfilment.', '提供集货、库存管理及区域履约服务。', '提供集貨、庫存管理及區域履約服務。'] as Copy },
   { id: 'insurance', icon: 'box' as IconName, name: ['Cargo insurance', '货运保险', '貨運保險'] as Copy, intro: ['Practical protection built around your cargo and route.', '根据货物及路线提供切合实际的保障。', '根據貨物及路線提供切合實際的保障。'] as Copy },
 ];
+
+const serviceTags: Record<string, Copy> = {
+  sea: ['FCL · LCL', '整柜 · 拼箱', '整櫃 · 拼箱'],
+  air: ['Express · Consolidated', '快件 · 集运', '快件 · 集運'],
+  road: ['Mainland · HK · ASEAN', '内地 · 香港 · 东盟', '內地 · 香港 · 東盟'],
+  rail: ['China–Europe · China–ASEAN', '中欧 · 中国—东盟', '中歐 · 中國—東盟'],
+  customs: ['Import · Export · HS codes', '进口 · 出口 · HS 编码', '進口 · 出口 · HS 編碼'],
+  warehouse: ['Overseas warehouse · Last mile', '海外仓 · 末端配送', '海外倉 · 末端配送'],
+  insurance: ['Door-to-door cover', '门到门保障', '門到門保障'],
+};
 
 const solutions = [
   { id: 'electronics', icon: 'chip' as IconName, name: ['Electronics & technology', '电子及科技', '電子及科技'] as Copy, text: ['Secure handling for high-value, time-critical cargo.', '为高价值、时效敏感货物提供安全操作。', '為高價值、時效敏感貨物提供安全操作。'] as Copy },
@@ -182,45 +193,168 @@ function Footer() {
       <div className="footer-nav"><strong>{t(['Explore', '探索', '探索'])}</strong><Link to="/services">{t(['Services', '服务', '服務'])}</Link><Link to="/network">{t(['Network', '网络覆盖', '網絡覆蓋'])}</Link><Link to="/about">{t(['About us', '关于我们', '關於我們'])}</Link></div>
       <div className="footer-nav"><strong>{t(['Contact', '联系', '聯絡'])}</strong><a href="tel:+85239052188">+852 3905 2188</a><a href="mailto:hello@magni-logistics.com">hello@magni-logistics.com</a><a className="whatsapp-link" href={whatsappLink(t(whatsappGreeting))} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={15} />WhatsApp</a><span>{t(['Hong Kong SAR', '中国香港特别行政区', '中國香港特別行政區'])}</span></div>
     </div>
-    <div className="container footer-bottom"><span>© 2026 Magni Technology Limited</span><nav aria-label={t(['Legal', '法律信息', '法律資訊'])}>{legalPages.map((page) => <Link key={page.id} to={`/legal/${page.id}`}>{t(page.name)}</Link>)}</nav></div>
+    <div className="container footer-bottom"><span>© 2026 Magni Technology Limited</span><nav aria-label={t(['Legal', '法律信息', '法律資訊'])}>{legalPages.map((page) => <Link key={page.id} to={`/legal/${page.id}`}>{t(page.name)}</Link>)}<Link to="/credits">{t(['Photo credits', '图片来源', '圖片來源'])}</Link></nav></div>
   </footer>;
 }
 
-function Home() {
+/* One credit line for the stand-in photographs on the homepage (Wikimedia Commons licences). */
+const photoCredits = [
+  { by: 'U.S. Department of Agriculture', licence: 'Public domain', page: 'https://commons.wikimedia.org/wiki/File:Packages_on_UPS_conveyor_belt.jpg' },
+  { by: 'Cjp24', licence: 'CC BY-SA 3.0', page: 'https://commons.wikimedia.org/wiki/File:Warehouse-plastic_industry2.jpg' },
+  { by: 'MNXANL', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:201611_Shenzhen_Bay_Port_Shenzhen_Side.jpg' },
+  { by: 'Destroducks', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Truck_on_Highway_Bridge.jpg' },
+  { by: 'Daniel Lu', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Stonecutters_Bridge_and_Kwai_Tsing_Container_Terminals_Hong_Kong_2024_dllu.jpg' },
+  { by: 'Jan Helebrant', licence: 'CC0', page: 'https://commons.wikimedia.org/wiki/File:Electronics_PCB_circuit_board_002_(51131186557).jpg' },
+  { by: 'Marek Ślusarczyk', licence: 'CC BY 3.0', page: 'https://commons.wikimedia.org/wiki/File:001_Car_factory_assembly_line_-_Opel_factory_in_Gliwice,_Poland.jpg' },
+  { by: 'Henry Söderlund', licence: 'CC BY 2.0', page: 'https://commons.wikimedia.org/wiki/File:Cardboard_boxes_by_Henry_S%C3%B6derlund.jpg' },
+  { by: 'PAULIX04', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Fresh_Rambutans_Piled_High.jpg' },
+  { by: 'Oregon Department of Transportation', licence: 'CC BY 2.0', page: 'https://commons.wikimedia.org/wiki/File:Truck_with_Windmill_Blade_on_its_way_to_Shepherds_Flat_Wind_Farm_(5812554418).jpg' },
+  { by: 'Zairon', licence: 'CC BY-SA 4.0', page: 'https://commons.wikimedia.org/wiki/File:Singapore_Port_viewed_from_The_Pinnacle@Duxton_09.jpg' },
+  { by: 'Lokomotive74', licence: 'CC BY 2.5', page: 'https://commons.wikimedia.org/wiki/File:Laem_Chabang.jpg' },
+  { by: 'Bem photography', licence: 'CC BY 2.0', page: 'https://commons.wikimedia.org/wiki/File:C%E1%BA%A3ng_C%C3%A1t_L%C3%A1i.jpg' },
+];
+/* The photo credits page (/credits), linked from the footer: CC BY and CC BY-SA licences require the credit. */
+function CreditsPage() {
   const { t } = useI18n();
+  return <><PageHero eyebrow={t(['Photo credits', '图片来源', '圖片來源'])} title={t(['Photographs on this site.', '本网站使用的图片。', '本網站使用的圖片。'])} intro={t(['These photographs come from Wikimedia Commons and are used under the licences listed.', '以下图片来自 Wikimedia Commons，并按所列许可使用。', '以下圖片來自 Wikimedia Commons，並按所列許可使用。'])} />
+    <section className="section"><div className="container legal-body"><ul className="detail-list">{photoCredits.map((credit) => <li key={credit.page}><Icon name="check" size={17} /><span><a href={credit.page} target="_blank" rel="noopener noreferrer">{credit.by}</a> · {credit.licence}</span></li>)}</ul></div></section></>;
+}
+
+/* Stand-in photographs (Wikimedia Commons, credited in the footer on the homepage). Replace with the client's own photos. */
+const stock = (id: string) => ({
+  src: `${import.meta.env.BASE_URL}images/stock/photo-${id}-960.jpg`,
+  srcSet: `${import.meta.env.BASE_URL}images/stock/photo-${id}-500.jpg 500w, ${import.meta.env.BASE_URL}images/stock/photo-${id}-960.jpg 960w`,
+});
+
+const shipmentSteps: Array<{ title: Copy; text: Copy; photo: string; alt: Copy }> = [
+  {
+    title: ['01 · Send the cargo details', '01 · 提交货物资料', '01 · 提交貨物資料'],
+    text: ['Origin, destination, commodity and weight. We reply with the mode, the route, the cost and the documents you will need.', '起运地、目的地、品名及重量。我们回复运输方式、线路、费用及所需单证。', '起運地、目的地、品名及重量。我們回覆運輸方式、線路、費用及所需單證。'],
+    photo: 'f110091497', alt: ['A carton on a conveyor belt in a distribution centre', '配送中心输送带上的纸箱', '配送中心輸送帶上的紙箱'],
+  },
+  {
+    title: ['02 · Pickup and consolidation', '02 · 提货及集货', '02 · 提貨及集貨'],
+    text: ['We collect from your factory or supplier. LCL cargo is consolidated at our Shenzhen warehouse before it leaves.', '我们到工厂或供应商处提货，拼箱货物先在深圳仓库集货再出发。', '我們到工廠或供應商處提貨，拼箱貨物先在深圳倉庫集貨再出發。'],
+    photo: 'f18189225', alt: ['Pallets of cargo in a warehouse aisle', '仓库通道中的货物托盘', '倉庫通道中的貨物托盤'],
+  },
+  {
+    title: ['03 · Export and import clearance', '03 · 出口及进口清关', '03 · 出口及進口清關'],
+    text: ['Our customs team files the declarations on both sides of the border, so the truck or container is not held at the port.', '报关团队在口岸两侧完成申报，货车或货柜不会滞留口岸。', '報關團隊在口岸兩側完成申報，貨車或貨櫃不會滯留口岸。'],
+    photo: 'f52914747', alt: ['Shenzhen Bay Port border crossing at night', '夜间的深圳湾口岸', '夜間的深圳灣口岸'],
+  },
+  {
+    title: ['04 · Delivery and proof', '04 · 派送及签收', '04 · 派送及簽收'],
+    text: ['Door delivery across Southeast Asia, milestone updates in tracking, and a signed proof of delivery at the end.', '派送至东南亚各地收货点，追踪系统实时更新节点，最后提供签收证明。', '派送至東南亞各地收貨點，追蹤系統即時更新節點，最後提供簽收證明。'],
+    photo: 'f100178807', alt: ['A container truck on a highway interchange', '高速公路立交桥上的货柜车', '高速公路立交橋上的貨櫃車'],
+  },
+];
+
+/* Runs the skill's scroll moments (public/assets/moments) on the homepage only. */
+function useMoments(deps: unknown[]) {
+  useEffect(() => {
+    (window as unknown as { __momentsManual: boolean }).__momentsManual = true;
+    let cancelled = false;
+    let api: { mount: (el: Element) => Promise<unknown>; unmountAll: (root: Element) => void } | null = null;
+    const root = document.querySelector('main');
+    import(/* @vite-ignore */ `${import.meta.env.BASE_URL}assets/moments/moments.js`).then((mod) => {
+      if (cancelled || !root) return;
+      api = mod;
+      root.querySelectorAll('[data-moment]').forEach((el) => { mod.mount(el); });
+    }).catch(() => {
+      // a failed module leaves the photographs and steps showing as written
+    });
+    return () => { cancelled = true; if (api && root) api.unmountAll(root); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+}
+
+/* One stand-in photograph per industry for the homepage peek panel (same order as `solutions`). */
+const industryPhotos: Record<string, { photo: string; alt: Copy; pos?: string }> = {
+  electronics: { photo: 'f126446193', alt: ['A microchip and its gold bond wires, close up', '微芯片及金线特写', '微晶片及金線特寫'] },
+  'auto-machinery': { photo: 'f116381354', alt: ['Cars on a factory assembly line', '工厂装配线上的汽车', '工廠裝配線上的汽車'], pos: '30% 50%' },
+  ecommerce: { photo: 'f139907477', alt: ['Stacks of flat-packed cardboard boxes', '成叠的扁平纸箱', '成疊的扁平紙箱'] },
+  'fmcg-cold-chain': { photo: 'f199197470', alt: ['Fresh rambutans and mangosteens at a market', '市场上的新鲜红毛丹及山竹', '市場上的新鮮紅毛丹及山竹'], pos: '40% 50%' },
+  'project-logistics': { photo: 'f24374661', alt: ['A wind turbine blade on an oversize-load trailer', '超限运输拖车上的风力发电机叶片', '超限運輸拖車上的風力發電機葉片'], pos: '35% 50%' },
+};
+
+function Home() {
+  const { language, t } = useI18n();
   const { openQuote } = useLayout();
   const [tracking, setTracking] = useState('');
+  const [peek, setPeek] = useState<string | null>(null);
   const navigate = useNavigate();
+  useMoments([language]);
   const track = (event: FormEvent) => { event.preventDefault(); navigate(`/tracking?no=${encodeURIComponent(tracking)}`); };
   return <>
     <section className="hero">
       <img src={`${import.meta.env.BASE_URL}images/magni-port-hero.png`} alt="" className="hero-image" /><div className="hero-overlay" />
       <div className="container hero-inner">
-        <p className="eyebrow light">{t(['Built for trade across Asia', '为亚洲贸易而生', '為亞洲貿易而生'])}</p>
-        <h1>{t(['Moving your business', '连接机遇，', '連接機遇，'])}<br /><em>{t(['forward.', '运达未来', '運達未來'])}</em></h1>
-        <p className="hero-copy">{t(['Integrated freight and supply chain solutions connecting China, Hong Kong and Southeast Asia—with clarity at every handover.', '一体化货运及供应链方案，连接中国内地、香港与东南亚，每个交接环节清晰可控。', '一體化貨運及供應鏈方案，連接中國內地、香港與東南亞，每個交接環節清晰可控。'])}</p>
-        <div className="hero-actions"><button className="button button-accent" onClick={openQuote}>{t(['Plan your shipment', '规划您的货运', '規劃您的貨運'])}<Icon name="arrow" size={18} /></button><Link className="text-button light-link" to="/services">{t(['Explore our services', '探索服务', '探索服務'])}<Icon name="arrow" size={17} /></Link></div>
+        <p className="eyebrow light">{t(['B2B cross-border logistics · Hong Kong', 'B2B 跨境物流 · 香港', 'B2B 跨境物流 · 香港'])}</p>
+        <h1>{t(['China to Southeast Asia,', '中国—东南亚', '中國—東南亞'])}<br /><em>{t(['road, sea and customs in one booking.', 'B2B 跨境陆运、海运、清关一站式', 'B2B 跨境陸運、海運、清關一站式'])}</em></h1>
+        <p className="hero-copy">{t(['Trucking, FCL/LCL, air and rail for manufacturers and traders, with export and import clearance at every border. One Hong Kong team plans, books and tracks each shipment.', '为制造商及贸易商提供陆运、整柜/拼箱、空运及铁路运输，每个口岸的进出口清关一并处理。由香港团队统一规划、订舱及追踪每票货物。', '為製造商及貿易商提供陸運、整櫃/拼箱、空運及鐵路運輸，每個口岸的進出口清關一併處理。由香港團隊統一規劃、訂艙及追蹤每票貨物。'])}</p>
+        <div className="hero-actions"><button className="button button-accent" onClick={openQuote}>{t(['Get a quote', '获取报价', '索取報價'])}<Icon name="arrow" size={18} /></button><Link className="text-button light-link" to="/services">{t(['View all 7 services', '查看全部 7 项服务', '查看全部 7 項服務'])}<Icon name="arrow" size={17} /></Link></div>
       </div>
-      <div className="container hero-foot"><span>22.3193° N</span><span>114.1694° E</span><span className="hero-foot-line" /><span>HONG KONG</span></div>
+      <div className="container hero-foot">{[
+        t(['Cross-border trucking', '跨境陆运', '跨境陸運']), t(['FCL / LCL', '整柜 / 拼箱', '整櫃 / 拼箱']), t(['Air', '空运', '空運']), t(['Rail', '铁路', '鐵路']), t(['Customs clearance', '报关清关', '報關清關']),
+      ].map((mode, index) => <span key={mode}>{index > 0 && <i className="hero-foot-dot" />}{mode}</span>)}</div>
     </section>
     <section className="tracking-panel container">
-      <div className="tracking-title"><span className="icon-box"><Icon name="search" /></span><div><p className="mini-label">{t(['Shipment visibility', '货运可视化', '貨運可視化'])}</p><h2>{t(['Track your cargo', '追踪您的货物', '追蹤您的貨物'])}</h2></div></div>
-      <form className="tracking-form" onSubmit={track}><input value={tracking} onChange={(e) => setTracking(e.target.value)} placeholder={t(['Enter shipment or booking no.', '输入运单或订舱编号', '輸入運單或訂艙編號'])} /><button className="button button-dark">{t(['Track', '追踪', '追蹤'])}<Icon name="arrow" size={17} /></button></form>
+      <div className="tracking-title"><span className="icon-box"><Icon name="search" /></span><div><p className="mini-label">{t(['Shipment visibility', '货运可视化', '貨運可視化'])}</p><h2><label htmlFor="home-track-no">{t(['Track your cargo', '追踪您的货物', '追蹤您的貨物'])}</label></h2></div></div>
+      <form className="tracking-form" onSubmit={track}><input id="home-track-no" value={tracking} onChange={(e) => setTracking(e.target.value)} placeholder={t(['Enter shipment or booking no.', '输入运单或订舱编号', '輸入運單或訂艙編號'])} /><button className="button button-dark">{t(['Track', '追踪', '追蹤'])}<Icon name="arrow" size={17} /></button></form>
       <div className="track-message">{t(['Demo: MAG260018', '演示编号：MAG260018', '示範編號：MAG260018'])}</div>
     </section>
-    <section className="trust-strip"><div className="container trust-grid">{[
-      ['12+', t(['Years of regional expertise', '年区域经验', '年區域經驗'])],
-      ['18', t(['Markets connected across Asia', '个亚洲市场', '個亞洲市場'])],
-      ['98.6%', t(['On-time documentation rate', '单证准时率', '單證準時率'])],
-      ['24/7', t(['Operational visibility', '运营可视化', '營運可視化'])],
-    ].map(([value, label]) => <div key={value}><strong>{value}</strong><span>{label}</span></div>)}</div></section>
-    <section className="section services-section"><div className="container">
-      <div className="section-heading"><div><p className="eyebrow">{t(['What we move', '运输服务', '運輸服務'])}</p><h2>{t(['One partner. Every link in the chain.', '一个伙伴，贯通供应链每一环。', '一個夥伴，貫通供應鏈每一環。'])}</h2></div><p>{t(['From a single pallet to a complex regional programme, we coordinate the details that keep your business moving.', '从单个托盘到复杂区域项目，我们协调每个细节，确保业务持续运转。', '從單個托盤到複雜區域項目，我們協調每個細節，確保業務持續運轉。'])}</p></div>
-      <div className="services-grid">{services.slice(0, 4).map((service, index) => <article className="service-card" key={service.id}><div className="service-top"><span>0{index + 1}</span><Icon name={service.icon} size={31} /></div><div><small>{t(service.name)}</small><h3>{t(service.name)}</h3><p>{t(service.intro)}</p></div><Link to={`/services/${service.id}`}><span>{t(['Explore service', '查看服务', '查看服務'])}</span><Icon name="arrow" size={18} /></Link></article>)}</div>
-      <div className="section-more"><Link className="text-button dark-link" to="/services">{t(['Explore all services', '查看全部服务', '查看全部服務'])}<Icon name="arrow" size={17} /></Link></div>
+    {/* PLACEHOLDER FIGURES: every number and badge below must be confirmed by the client before launch. */}
+    <section className="trust-strip"><div className="container">
+      <div className="trust-grid">{[
+        ['12+', t(['Years in service', '年服务经验', '年服務經驗'])],
+        ['18', t(['Countries and ports covered', '个覆盖国家及口岸', '個覆蓋國家及口岸'])],
+        ['20,000 m²', t(['Own warehouse space', '自营仓储面积', '自營倉儲面積'])],
+        ['1,500 TEU', t(['Shipped every month', '月均货量', '月均貨量'])],
+        ['300+', t(['Businesses served', '服务企业', '服務企業'])],
+      ].map(([value, label]) => <div key={value}><strong>{value}</strong><span>{label}</span></div>)}</div>
+      <div className="badge-row"><span className="badge-label">{t(['Licences & memberships', '资质及会员', '資質及會員'])}</span>{['HAFFA', 'FIATA', 'IATA', 'AEO', 'ISO 9001'].map((badge) => <span className="badge" key={badge}>{badge}</span>)}</div>
     </div></section>
-    <section className="home-map-section"><div className="container home-map-grid"><div><p className="eyebrow">{t(['Our network', '网络覆盖', '網絡覆蓋'])}</p><h2>{t(['Local knowledge. Regional reach.', '本地经验，区域覆盖。', '本地經驗，區域覆蓋。'])}</h2><p>{t(['Our Hong Kong team connects manufacturing centres in China with major markets across Southeast Asia.', '香港团队连接中国制造中心与东南亚主要市场。', '香港團隊連接中國製造中心與東南亞主要市場。'])}</p><Link className="text-button dark-link" to="/network">{t(['Explore the network', '查看完整网络', '查看完整網絡'])}<Icon name="arrow" size={17} /></Link></div><NetworkMap compact /></div></section>
-    <section className="section industries-section"><div className="container"><div className="section-heading compact"><div><p className="eyebrow">{t(['Industry solutions', '行业解决方案', '行業解決方案'])}</p><h2>{t(['Built around your cargo.', '围绕您的货物而设计。', '圍繞您的貨物而設計。'])}</h2></div><Link className="text-button dark-link" to="/solutions">{t(['View all solutions', '查看所有方案', '查看所有方案'])}<Icon name="arrow" size={17} /></Link></div><div className="industry-grid">{solutions.map((solution, index) => <Link className="industry-item" to={`/solutions/${solution.id}`} key={solution.id}><span>0{index + 1}</span><span className="industry-icon"><Icon name={solution.icon} size={28} /></span><div><h3>{t(solution.name)}</h3><p>{t(solution.text)}</p></div><Icon name="arrow" size={20} /></Link>)}</div></div></section>
+    <section className="section services-section"><div className="container">
+      <div className="section-heading"><div><p className="eyebrow">{t(['Services', '服务项目', '服務項目'])}</p><h2>{t(['Seven services, one booking desk.', '七项服务，一个订舱窗口。', '七項服務，一個訂艙窗口。'])}</h2></div><p>{t(['Pick a mode to see suitable cargo, transit times, routes and the documents you need.', '选择运输方式，查看适用货物、时效、线路及所需单证。', '選擇運輸方式，查看適用貨物、時效、線路及所需單證。'])}</p></div>
+      <div className="services-grid">
+        {services.map((service, index) => <Link className="service-card" to={`/services/${service.id}`} key={service.id}><div className="service-top"><span>0{index + 1}</span><Icon name={service.icon} size={31} /></div><div><small>{t(serviceTags[service.id])}</small><h3>{t(service.name)}</h3><p>{t(service.intro)}</p></div><span className="service-link"><span>{t(['View service', '查看服务', '查看服務'])}</span><Icon name="arrow" size={18} /></span></Link>)}
+        <div className="service-card service-card-quote"><div><small>{t(['Not sure which mode?', '不确定选哪种方式？', '不確定選哪種方式？'])}</small><h3>{t(['Send the cargo details. We suggest the route.', '提供货物资料，我们为您建议路线。', '提供貨物資料，我們為您建議路線。'])}</h3></div><button className="button button-accent" onClick={openQuote}>{t(['Get a quote', '获取报价', '索取報價'])}<Icon name="arrow" size={17} /></button></div>
+      </div>
+    </div></section>
+    {/* Moment 1 (dealt: pinned-chapters): the section holds while the four steps open one at a time */}
+    <section className="process-section" key={`process-${language}`} data-moment="pinned-chapters" aria-labelledby="process-h">
+      <div className="container mo-pc__grid">
+        <div className="mo-pc__text">
+          <div><p className="eyebrow">{t(['How it works', '操作流程', '操作流程'])}</p><h2 id="process-h">{t(['How a shipment moves with us.', '一票货物的完整流程。', '一票貨物的完整流程。'])}</h2></div>
+          <ol className="mo-pc__steps">{shipmentSteps.map((step) => {
+            const photo = stock(step.photo);
+            return <li className="mo-pc__step" key={step.photo}>
+              <h3>{t(step.title)}</h3>
+              <p><span className="mo-pc__p-in">{t(step.text)}</span></p>
+              <figure className="mo-pc__visual"><img src={photo.src} srcSet={photo.srcSet} sizes="(max-width: 1023px) 100vw, 50vw" width="960" height="640" alt={t(step.alt)} loading="lazy" decoding="async" /></figure>
+            </li>;
+          })}</ol>
+        </div>
+        <div className="mo-pc__visuals" />
+      </div>
+    </section>
+    <section className="home-map-section"><div className="container home-map-grid"><div><p className="eyebrow">{t(['Our network', '网络覆盖', '網絡覆蓋'])}</p><h2>{t(['Offices, warehouses and gateways across Asia.', '覆盖亚洲的办公室、仓库及口岸。', '覆蓋亞洲的辦公室、倉庫及口岸。'])}</h2><p>{t(['Our Hong Kong team connects manufacturing centres in China with major markets across Southeast Asia.', '香港团队连接中国制造中心与东南亚主要市场。', '香港團隊連接中國製造中心與東南亞主要市場。'])}</p><Link className="text-button dark-link" to="/network">{t(['Explore the network', '查看完整网络', '查看完整網絡'])}<Icon name="arrow" size={17} /></Link></div><NetworkMap compact /></div></section>
+    <section className="section industries-section"><div className="container industries-split">
+      <div>
+        <div className="section-heading compact"><div><p className="eyebrow">{t(['Industry solutions', '行业解决方案', '行業解決方案'])}</p><h2>{t(['Logistics by industry.', '按行业划分的物流方案。', '按行業劃分的物流方案。'])}</h2></div></div>
+        <div className="industry-grid">{solutions.map((solution, index) => <Link className={`industry-item ${peek === solution.id ? 'is-peek' : ''}`} to={`/solutions/${solution.id}`} key={solution.id} onMouseEnter={() => setPeek(solution.id)} onFocus={() => setPeek(solution.id)}><span>0{index + 1}</span><span className="industry-icon"><Icon name={solution.icon} size={28} /></span><div><h3>{t(solution.name)}</h3><p>{t(solution.text)}</p></div><Icon name="arrow" size={20} /></Link>)}</div>
+        <Link className="text-button dark-link industries-more" to="/solutions">{t(['View all solutions', '查看所有方案', '查看所有方案'])}<Icon name="arrow" size={17} /></Link>
+      </div>
+      {/* Moment 2 (dealt: picture-develops, film look): the photograph develops once as it scrolls in */}
+      <figure className="develop-frame" key={`develop-${language}`} data-moment="picture-develops"><img src={`${import.meta.env.BASE_URL}images/stock/photo-f187045971-1280.jpg`} srcSet={`${stock('f187045971').srcSet}, ${import.meta.env.BASE_URL}images/stock/photo-f187045971-1280.jpg 1280w`} sizes="(max-width: 860px) 200vw, 1500px" width="1280" height="640" alt={t(['Stonecutters Bridge with the Kwai Tsing container terminals behind it, Hong Kong', '昂船洲大桥及其后方的葵青货柜码头，香港', '昂船洲大橋及其後方的葵青貨櫃碼頭，香港'])} loading="lazy" decoding="async" />
+        {/* peek layer: hovering or focusing an industry crossfades to its photograph */}
+        <div className="peek-layer" aria-hidden={peek === null}>{solutions.map((solution) => {
+          const item = industryPhotos[solution.id];
+          const photo = stock(item.photo);
+          return <img key={solution.id} className={peek === solution.id ? 'is-on' : ''} src={photo.src} srcSet={photo.srcSet} sizes="(max-width: 860px) 100vw, 50vw" width="960" height="640" alt={peek === solution.id ? t(item.alt) : ''} style={item.pos ? { objectPosition: item.pos } : undefined} loading="lazy" decoding="async" />;
+        })}</div>
+      </figure>
+    </div></section>
     <CallToAction />
   </>;
 }
@@ -247,16 +381,20 @@ function ServiceDetail() {
   if (!service) return <NotFound />;
   return <><PageHero eyebrow={t(['Our services', '我们的服务', '我們的服務'])} title={t(service.name)} intro={t(service.intro)} />
     <section className="detail-section"><div className="container detail-layout"><aside><p>{t(['Services', '服务', '服務'])}</p>{services.map((item) => <NavLink key={item.id} to={`/services/${item.id}`}><Icon name={item.icon} size={18} />{t(item.name)}</NavLink>)}</aside><article className="detail-content">
-      <p className="detail-lead">{t(['From booking to final handover, our specialists manage capacity, documentation and milestones as one connected operation.', '从订舱到最终交付，我们的专员统一管理运力、单证及各项里程碑。', '從訂艙到最終交付，我們的專員統一管理運力、單證及各項里程碑。'])}</p>
-      <h2>{t(['What you can expect', '您可以期待', '您可以期待'])}</h2><div className="benefit-grid">{[
-        t(['Route planning built around your priorities', '根据您的优先事项规划路线', '根據您的優先事項規劃路線']),
-        t(['One point of contact across every handover', '每个交接环节均由专人负责', '每個交接環節均由專人負責']),
-        t(['Clear milestone and exception updates', '清晰的里程碑及异常更新', '清晰的里程碑及異常更新']),
-        t(['Local customs and documentation support', '本地清关及单证支持', '本地清關及單證支援']),
-      ].map((item) => <div key={item}><Icon name="check" size={19} /><span>{item}</span></div>)}</div>
-      <h2>{t(['How it works', '服务流程', '服務流程'])}</h2><div className="process-grid">{[
-        t(['Plan', '规划', '規劃']), t(['Book', '订舱', '訂艙']), t(['Move', '运输', '運輸']), t(['Deliver', '交付', '交付']),
-      ].map((item, index) => <div key={item}><span>0{index + 1}</span><strong>{item}</strong></div>)}</div>
+      {(() => { const detail = serviceDetails[service.id]; return <>
+        <p className="detail-lead">{t(detail.lead)}</p>
+        <h2>{t(['Suitable cargo', '适用货物', '適用貨物'])}</h2>
+        <div className="benefit-grid">{detail.cargo.map((item) => <div key={item[0]}><Icon name="check" size={19} /><span>{t(item)}</span></div>)}</div>
+        <h2>{t(['Typical transit times', '典型时效', '典型時效'])}</h2>
+        <div className="transit-table" role="table">{detail.transit.map((row) => <div className="transit-row" role="row" key={row.lane[0]}><span role="cell">{t(row.lane)}</span><strong role="cell">{t(row.time)}</strong></div>)}</div>
+        <p className="detail-note">{t(detail.transitNote)}</p>
+        <div className="detail-columns">
+          <div><h2>{t(['Routes covered', '覆盖线路', '覆蓋線路'])}</h2><ul className="detail-list">{detail.routes.map((item) => <li key={item[0]}><Icon name="route" size={17} />{t(item)}</li>)}</ul></div>
+          <div><h2>{t(['Documents you need', '所需单证', '所需單證'])}</h2><ul className="detail-list">{detail.documents.map((item) => <li key={item[0]}><Icon name="box" size={17} />{t(item)}</li>)}</ul></div>
+        </div>
+        <h2>{t(['How it works', '操作流程', '操作流程'])}</h2>
+        <ol className="process-grid process-steps">{detail.process.map((step, index) => <li key={step.title[0]}><span>0{index + 1}</span><strong>{t(step.title)}</strong><p>{t(step.text)}</p></li>)}</ol>
+      </>; })()}
       <div className="detail-cta"><div><h3>{t(['Ready to plan this shipment?', '准备规划这票货运？', '準備規劃這票貨運？'])}</h3><p>{t(['Share your origin, destination and cargo details.', '请提供起运地、目的地及货物资料。', '請提供起運地、目的地及貨物資料。'])}</p></div><button className="button button-accent" onClick={openQuote}>{t(['Request a quote', '获取报价', '索取報價'])}<Icon name="arrow" size={17} /></button></div>
     </article></div></section></>;
 }
@@ -275,7 +413,18 @@ function SolutionDetail() {
   const { openQuote } = useLayout();
   const solution = solutions.find((item) => item.id === solutionId);
   if (!solution) return <NotFound />;
-  return <><PageHero eyebrow={t(['Industry solution', '行业方案', '行業方案'])} title={t(solution.name)} intro={t(solution.text)} /><section className="detail-section"><div className="container detail-layout"><aside><p>{t(['Industries', '行业', '行業'])}</p>{solutions.map((item) => <NavLink key={item.id} to={`/solutions/${item.id}`}><Icon name={item.icon} size={17} />{t(item.name)}</NavLink>)}</aside><article className="detail-content"><p className="detail-lead">{t(['Your supply chain must protect product integrity while keeping inventory, cost and delivery promises in balance. We build the operating model around those realities.', '您的供应链必须在保障产品完整性的同时，平衡库存、成本及交付承诺。我们围绕这些实际需求构建运营模式。', '您的供應鏈必須在保障產品完整性的同時，平衡庫存、成本及交付承諾。我們圍繞這些實際需求構建營運模式。'])}</p><h2>{t(['A connected approach', '一体化方案', '一體化方案'])}</h2><div className="feature-columns"><div><Icon name="route" size={27} /><h3>{t(['Route resilience', '路线韧性', '路線韌性'])}</h3><p>{t(['Primary and alternative routing planned from the start.', '从一开始便规划主要及备用路线。', '從一開始便規劃主要及備用路線。'])}</p></div><div><Icon name="box" size={27} /><h3>{t(['Cargo controls', '货物管控', '貨物管控'])}</h3><p>{t(['Handling instructions aligned across every partner.', '所有合作伙伴遵循统一操作指引。', '所有合作夥伴遵循統一操作指引。'])}</p></div><div><Icon name="clock" size={27} /><h3>{t(['Milestone clarity', '节点清晰', '節點清晰'])}</h3><p>{t(['Proactive updates before issues affect delivery.', '在问题影响交付前主动更新。', '在問題影響交付前主動更新。'])}</p></div></div><button className="button button-accent" onClick={openQuote}>{t(['Discuss your requirements', '讨论您的需求', '商討您的需求'])}<Icon name="arrow" size={17} /></button></article></div></section></>;
+  return <><PageHero eyebrow={t(['Industry solution', '行业方案', '行業方案'])} title={t(solution.name)} intro={t(solution.text)} /><section className="detail-section"><div className="container detail-layout"><aside><p>{t(['Industries', '行业', '行業'])}</p>{solutions.map((item) => <NavLink key={item.id} to={`/solutions/${item.id}`}><Icon name={item.icon} size={17} />{t(item.name)}</NavLink>)}</aside><article className="detail-content">{(() => { const detail = solutionDetails[solution.id]; const icons: IconName[] = ['route', 'box', 'clock']; return <>
+      <p className="detail-lead">{t(detail.lead)}</p>
+      <h2>{t(['What we move', '我们运输的货物', '我們運輸的貨物'])}</h2>
+      <div className="benefit-grid">{detail.cargo.map((item) => <div key={item[0]}><Icon name="check" size={19} /><span>{t(item)}</span></div>)}</div>
+      <h2>{t(['What makes it hard', '行业难点', '行業難點'])}</h2>
+      <div className="challenge-list">{detail.challenges.map((item, index) => <div key={item.title[0]}><span>0{index + 1}</span><div><h3>{t(item.title)}</h3><p>{t(item.text)}</p></div></div>)}</div>
+      <h2>{t(['How we handle it', '我们的做法', '我們的做法'])}</h2>
+      <div className="feature-columns">{detail.approach.map((item, index) => <div key={item.title[0]}><Icon name={icons[index % icons.length]} size={27} /><h3>{t(item.title)}</h3><p>{t(item.text)}</p></div>)}</div>
+      <h2>{t(['Services we use', '相关服务', '相關服務'])}</h2>
+      <div className="service-chips">{detail.services.map((id) => { const item = services.find((s) => s.id === id)!; return <Link key={id} to={`/services/${id}`}><Icon name={item.icon} size={18} />{t(item.name)}<Icon name="arrow" size={15} /></Link>; })}</div>
+      <div className="detail-cta"><div><h3>{t(['Tell us about your cargo', '告诉我们您的货物情况', '告訴我們您的貨物情況'])}</h3><p>{t(['We reply with a route, a transit time and a cost.', '我们会回复建议路线、时效及费用。', '我們會回覆建議路線、時效及費用。'])}</p></div><button className="button button-accent" onClick={openQuote}>{t(['Get a quote', '获取报价', '索取報價'])}<Icon name="arrow" size={17} /></button></div>
+    </>; })()}</article></div></section></>;
 }
 
 const offices = [
@@ -286,19 +435,51 @@ const offices = [
   { id: 'sgn', x: 69, y: 65, type: 'gateway', name: ['Ho Chi Minh City', '胡志明市', '胡志明市'] as Copy, detail: ['Ocean & air gateway', '海空运门户', '海空運門戶'] as Copy },
 ];
 
+/* Stand-in photographs for each map location (Wikimedia Commons, credited in the footer). */
+const locationPhotos: Record<string, { photo: string; small?: boolean; pos?: string; zoom?: boolean; alt: Copy }> = {
+  hk: { photo: 'f187045971', pos: '62% 50%', alt: ['Stonecutters Bridge and the Kwai Tsing container terminals', '昂船洲大桥及葵青货柜码头', '昂船洲大橋及葵青貨櫃碼頭'] },
+  sz: { photo: 'f18189225', alt: ['Pallets of cargo in a warehouse aisle', '仓库通道中的货物托盘', '倉庫通道中的貨物托盤'] },
+  sg: { photo: 'f59042181', small: true, alt: ['Container cranes at the Port of Singapore', '新加坡港的货柜吊机', '新加坡港的貨櫃吊機'] },
+  bkk: { photo: 'f3933265', alt: ['The entrance to Laem Chabang Port, Bangkok’s main seaport', '曼谷主要海港林查班港入口', '曼谷主要海港林查班港入口'] },
+  sgn: { photo: 'f126458271', pos: '50% 50%', zoom: true, alt: ['A cargo ship at Cat Lai port, Ho Chi Minh City', '胡志明市吉莱港的货船', '胡志明市吉萊港的貨船'] },
+};
+const locationImg = (id: string) => {
+  const item = locationPhotos[id];
+  const base = `${import.meta.env.BASE_URL}images/stock/photo-${item.photo}`;
+  return { src: item.small ? `${base}-500.jpg` : `${base}-960.jpg`, srcSet: item.small ? undefined : `${base}-500.jpg 500w, ${base}-960.jpg 960w`, pos: item.pos, style: { ...(item.pos ? { objectPosition: item.pos } : {}), ...(item.zoom ? { transform: 'scale(1.3)', transformOrigin: '50% 45%' } : {}) } };
+};
+
 function NetworkMap({ compact = false, filter = 'all', selected, onSelect }: { compact?: boolean; filter?: string; selected?: string; onSelect?: (id: string) => void }) {
   const { t } = useI18n();
+  // a filter shows only its own type of location; the routes show only on "All locations"
   const visible = offices.filter((office) => filter === 'all' || office.type === filter);
-  return <div className={`network-map ${compact ? 'compact' : ''}`}>
+  // hover card: a photograph of the place, placed beside the pin the pointer or keyboard is on
+  const [hover, setHover] = useState<{ id: string; x: number; y: number; below: boolean } | null>(null);
+  const showCard = (id: string, target: Element) => {
+    const stage = target.closest('.map-stage');
+    if (!stage) return;
+    const s = stage.getBoundingClientRect();
+    const p = target.querySelector('.pin-dot')!.getBoundingClientRect();
+    const x = p.left + p.width / 2 - s.left;
+    const y = p.top + p.height / 2 - s.top;
+    setHover({ id, x, y, below: y < s.height * 0.42 });
+  };
+  const hovered = hover && offices.find((office) => office.id === hover.id);
+  return <div className={`network-map ${compact ? 'compact' : ''}`}><div className="map-stage" onMouseLeave={() => setHover(null)}>
     <svg viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`} role="img" aria-label={t(['Asia logistics network map', '亚洲物流网络地图', '亞洲物流網絡地圖'])}>
       <rect className="map-sea" width={MAP_WIDTH} height={MAP_HEIGHT} />
       {mapLand.map((country) => <path key={country.iso} className={`map-land ${country.primary ? '' : 'secondary'}`} d={country.d} />)}
       {mapCountryLabels.map((label) => <text key={label.en} className={`map-country ${label.sea ? 'sea' : ''}`} x={label.x} y={label.y} textAnchor="middle">{label.en}</text>)}
-      {mapRoutes.filter((route) => visible.some((office) => office.id === route.to) || filter === 'all').map((route) => <path key={route.to} className="map-route" d={route.d} />)}
-      {visible.map((office) => { const point = mapLocations[office.id]; return <g key={office.id} className={`map-pin ${office.type} ${selected === office.id ? 'selected' : ''}`} transform={`translate(${point.x} ${point.y})`} role="button" tabIndex={0} aria-label={t(office.name)} onClick={() => onSelect?.(office.id)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelect?.(office.id); } }}>
+      {filter === 'all' && mapRoutes.map((route) => <path key={route.to} className="map-route" d={route.d} />)}
+      {visible.map((office) => { const point = mapLocations[office.id]; return <g key={office.id} className={`map-pin ${office.type} ${selected === office.id ? 'selected' : ''}`} transform={`translate(${point.x} ${point.y})`} role="button" tabIndex={0} aria-label={`${t(office.name)}, ${t(office.detail)}`} onMouseEnter={(event) => showCard(office.id, event.currentTarget)} onMouseLeave={() => setHover(null)} onFocus={(event) => { if (event.currentTarget.matches(':focus-visible')) showCard(office.id, event.currentTarget); }} onBlur={() => setHover(null)} onClick={() => onSelect?.(office.id)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onSelect?.(office.id); } }}>
         <circle r="16" className="pin-ring" /><circle r="6" className="pin-dot" /><text x={point.label.dx} y={point.label.dy} textAnchor={point.label.anchor}>{t(office.name)}</text>
       </g>; })}
     </svg>
+    {hovered && hover && (() => { const img = locationImg(hovered.id); return <div className={`map-card ${hovered.type} ${hover.below ? 'below' : ''}`} style={{ left: hover.x, top: hover.y }} aria-hidden="true">
+      <div className="map-card-photo"><div className="photo-clip"><img src={img.src} srcSet={img.srcSet} sizes="260px" alt="" style={img.style} /></div></div>
+      <div className="map-card-info"><strong>{t(hovered.name)}</strong><span><i />{t(hovered.detail)}</span></div>
+    </div>; })()}
+    </div>
     <div className="map-legend"><span><i className="office-dot" />{t(['Office', '办公室', '辦公室'])}</span><span><i className="warehouse-dot" />{t(['Warehouse', '仓库', '倉庫'])}</span><span><i className="gateway-dot" />{t(['Gateway', '门户', '門戶'])}</span></div>
   </div>;
 }
@@ -310,7 +491,7 @@ function NetworkPage() {
   const selectedOffice = offices.find((office) => office.id === selected)!;
   return <><PageHero eyebrow={t(['Our network', '网络覆盖', '網絡覆蓋'])} title={t(['Connected where your business moves.', '覆盖您的业务所至之处。', '覆蓋您的業務所至之處。'])} intro={t(['Operational reach across China and Southeast Asia, coordinated from Hong Kong.', '以香港为协调中心，运营网络覆盖中国及东南亚。', '以香港為協調中心，營運網絡覆蓋中國及東南亞。'])} /><section className="section network-page"><div className="container"><div className="map-filters">{[
     ['all', t(['All locations', '所有地点', '所有地點'])], ['office', t(['Offices', '办公室', '辦公室'])], ['warehouse', t(['Warehouses', '仓库', '倉庫'])], ['gateway', t(['Gateways', '门户', '門戶'])],
-  ].map(([key, label]) => <button className={filter === key ? 'selected' : ''} onClick={() => setFilter(key)} key={key}>{label}</button>)}</div><NetworkMap filter={filter} selected={selected} onSelect={setSelected} /><div className="location-card"><div><span>{t(['Selected location', '所选地点', '所選地點'])}</span><h2>{t(selectedOffice.name)}</h2><p>{t(selectedOffice.detail)}</p></div><div><strong>{t(['Capabilities', '服务能力', '服務能力'])}</strong><p>{t(['Freight coordination · Documentation · Local support', '货运协调 · 单证 · 本地支持', '貨運協調 · 單證 · 本地支援'])}</p></div></div></div></section></>;
+  ].map(([key, label]) => <button className={filter === key ? 'selected' : ''} onClick={() => setFilter(key)} key={key}>{label}</button>)}</div><NetworkMap filter={filter} selected={selected} onSelect={setSelected} /><div className="location-card">{(() => { const img = locationImg(selectedOffice.id); return <div className="location-photo"><img src={img.src} srcSet={img.srcSet} sizes="320px" alt={t(locationPhotos[selectedOffice.id].alt)} style={img.style} /></div>; })()}<div><span>{t(['Selected location', '所选地点', '所選地點'])}</span><h2>{t(selectedOffice.name)}</h2><p>{t(selectedOffice.detail)}</p></div><div><strong>{t(['Capabilities', '服务能力', '服務能力'])}</strong><p>{t(['Freight coordination · Documentation · Local support', '货运协调 · 单证 · 本地支持', '貨運協調 · 單證 · 本地支援'])}</p></div></div></div></section></>;
 }
 
 function TrackingPage() {
@@ -326,7 +507,19 @@ function TrackingPage() {
 
 function AboutPage() {
   const { t } = useI18n();
-  return <><PageHero eyebrow={t(['About Magni', '关于 Magni', '關於 Magni'])} title={t(['Regional logistics, personally managed.', '区域物流，专人负责。', '區域物流，專人負責。'])} intro={t(['A Hong Kong logistics company built around ownership, practical thinking and clear communication.', '一家以责任担当、务实思维及清晰沟通为核心的香港物流企业。', '一家以責任擔當、務實思維及清晰溝通為核心的香港物流企業。'])} /><section className="section"><div className="container story-grid"><div><p className="eyebrow">{t(['Our story', '我们的故事', '我們的故事'])}</p><h2>{t(['Close to the cargo. Closer to our customers.', '贴近货物，更贴近客户。', '貼近貨物，更貼近客戶。'])}</h2></div><div><p>{t(['Magni Technology Limited was established in Hong Kong to give growing businesses a more accountable way to manage freight across Asia. We combine direct access to China’s manufacturing centres with trusted capability across Southeast Asia.', 'Magni Technology Limited 成立于香港，致力为成长型企业提供更具责任感的亚洲货运管理方式。我们将中国制造中心的直接通道与东南亚的可靠服务能力相结合。', 'Magni Technology Limited 成立於香港，致力為成長型企業提供更具責任感的亞洲貨運管理方式。我們將中國製造中心的直接通道與東南亞的可靠服務能力相結合。'])}</p><div className="value-list">{[t(['Take ownership', '主动担当', '主動擔當']), t(['Communicate early', '及时沟通', '及時溝通']), t(['Solve practically', '务实解决', '務實解決'])].map((value) => <span key={value}><Icon name="check" size={18} />{value}</span>)}</div></div></div></section><CallToAction /></>;
+  return <><PageHero eyebrow={t(['About Magni', '关于 Magni', '關於 Magni'])} title={t(['Regional logistics, personally managed.', '区域物流，专人负责。', '區域物流，專人負責。'])} intro={t(['A Hong Kong logistics company built around ownership, practical thinking and clear communication.', '一家以责任担当、务实思维及清晰沟通为核心的香港物流企业。', '一家以責任擔當、務實思維及清晰溝通為核心的香港物流企業。'])} /><section className="section"><div className="container story-grid"><div><p className="eyebrow">{t(['Company profile', '公司简介', '公司簡介'])}</p><h2>{t(['A Hong Kong team for China–Southeast Asia freight.', '专注中国—东南亚货运的香港团队。', '專注中國—東南亞貨運的香港團隊。'])}</h2></div><div className="story-copy">{aboutContent.story.map((paragraph) => <p key={paragraph[0]}>{t(paragraph)}</p>)}</div></div></section>
+    <section className="section about-photo-section"><div className="container about-photo-grid">
+      <figure><img src={stock('f187045971').src} srcSet={stock('f187045971').srcSet} sizes="(max-width: 860px) 100vw, 50vw" width="960" height="480" alt={t(['Stonecutters Bridge and the Kwai Tsing container terminals, Hong Kong', '昂船洲大桥及葵青货柜码头，香港', '昂船洲大橋及葵青貨櫃碼頭，香港'])} loading="lazy" /></figure>
+      <figure><img src={stock('f18189225').src} srcSet={stock('f18189225').srcSet} sizes="(max-width: 860px) 100vw, 50vw" width="960" height="640" alt={t(['Pallets of cargo in a warehouse aisle', '仓库通道中的货物托盘', '倉庫通道中的貨物托盤'])} loading="lazy" /></figure>
+    </div></section>
+    <section className="section timeline-section"><div className="container">
+      <div className="section-heading compact"><div><p className="eyebrow">{t(['Our history', '发展历程', '發展歷程'])}</p><h2>{t(['From one border crossing to a regional network.', '从一个口岸到区域网络。', '從一個口岸到區域網絡。'])}</h2></div></div>
+      <ol className="timeline">{aboutContent.timeline.map((item) => <li key={item.year}><span className="timeline-year">{item.year}</span><h3>{t(item.title)}</h3><p>{t(item.text)}</p></li>)}</ol>
+    </div></section>
+    <section className="section values-section"><div className="container">
+      <div className="section-heading compact"><div><p className="eyebrow">{t(['How we work', '我们的工作方式', '我們的工作方式'])}</p><h2>{t(['Three promises to every customer.', '对每位客户的三个承诺。', '對每位客戶的三個承諾。'])}</h2></div></div>
+      <div className="feature-columns">{aboutContent.values.map((value, index) => <div key={value.title[0]}><Icon name={(['check', 'clock', 'route'] as IconName[])[index]} size={27} /><h3>{t(value.title)}</h3><p>{t(value.text)}</p></div>)}</div>
+    </div></section><CallToAction /></>;
 }
 
 function ContactPage() {
@@ -420,6 +613,7 @@ export const router = createBrowserRouter([
       { path: 'contact', Component: ContactPage },
       { path: 'quote', Component: QuotePage },
       { path: 'legal/:legalId', Component: LegalPage },
+      { path: 'credits', Component: CreditsPage },
       { path: '*', Component: NotFound },
     ],
   },
