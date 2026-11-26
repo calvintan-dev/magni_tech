@@ -11,6 +11,7 @@ import {
 import { FormEvent, ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { MAP_HEIGHT, MAP_WIDTH, mapCountryLabels, mapLand, mapLocations, mapRoutes } from './networkMapData';
 import { aboutContent, serviceDetails, solutionDetails } from './content';
+import { legalPages } from './legal';
 
 type Language = 'en' | 'zh-CN' | 'zh-HK';
 type Copy = [string, string, string];
@@ -548,48 +549,12 @@ function CallToAction() {
 
 // Legal pages (brief: footer must link 隐私政策 / 服务条款 / 标准交易条款).
 // DRAFT structure only: final wording must come from the client and their legal adviser.
-const legalPages: { id: string; name: Copy; intro: Copy; sections: Array<{ title: Copy; body: Copy }> }[] = [
-  {
-    id: 'privacy',
-    name: ['Privacy Policy', '隐私政策', '私隱政策'],
-    intro: ['How Magni Technology Limited collects, uses and protects personal data.', 'Magni Technology Limited 如何收集、使用及保护个人资料。', 'Magni Technology Limited 如何收集、使用及保障個人資料。'],
-    sections: [
-      { title: ['1. Data we collect', '1. 我们收集的资料', '1. 我們收集的資料'], body: ['Contact details and shipment information you submit through our quote, contact and tracking forms.', '您通过询价、联系及追踪表单提交的联系方式及货运资料。', '您透過詢價、聯絡及追蹤表格提交的聯絡資料及貨運資料。'] },
-      { title: ['2. How we use it', '2. 资料用途', '2. 資料用途'], body: ['To answer enquiries, prepare quotations and provide logistics services.', '用于回复咨询、准备报价及提供物流服务。', '用於回覆查詢、準備報價及提供物流服務。'] },
-      { title: ['3. Sharing and retention', '3. 资料共享及保存', '3. 資料披露及保存'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
-      { title: ['4. Your rights and contact', '4. 您的权利及联系方式', '4. 您的權利及聯絡方式'], body: ['Details pending client confirmation, in line with the Personal Data (Privacy) Ordinance (Cap. 486).', '具体内容待客户确认，并符合香港《个人资料（私隐）条例》（第486章）。', '具體內容待客戶確認，並符合《個人資料（私隱）條例》（第486章）。'] },
-    ],
-  },
-  {
-    id: 'terms',
-    name: ['Terms of Service', '服务条款', '服務條款'],
-    intro: ['The terms that apply when you use this website.', '使用本网站时适用的条款。', '使用本網站時適用的條款。'],
-    sections: [
-      { title: ['1. Use of this website', '1. 网站使用', '1. 網站使用'], body: ['Information on this website is for general reference and does not form a contract.', '本网站信息仅供一般参考，并不构成合同。', '本網站資訊僅供一般參考，並不構成合約。'] },
-      { title: ['2. Quotations', '2. 报价', '2. 報價'], body: ['Online enquiries are not binding. A quotation is confirmed only in writing by our team.', '网上询价不具约束力，报价以我们团队的书面确认为准。', '網上詢價不具約束力，報價以我們團隊的書面確認為準。'] },
-      { title: ['3. Liability', '3. 责任', '3. 責任'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
-      { title: ['4. Governing law', '4. 适用法律', '4. 適用法律'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
-    ],
-  },
-  {
-    id: 'trading-terms',
-    name: ['Standard Trading Conditions', '标准交易条款', '標準交易條款'],
-    intro: ['The conditions under which Magni Technology Limited handles all business.', 'Magni Technology Limited 承办所有业务时适用的条款。', 'Magni Technology Limited 承辦所有業務時適用的條款。'],
-    sections: [
-      { title: ['1. Scope', '1. 适用范围', '1. 適用範圍'], body: ['These conditions apply to all freight forwarding, customs, warehousing and related services we provide.', '本条款适用于我们提供的所有货运代理、报关、仓储及相关服务。', '本條款適用於我們提供的所有貨運代理、報關、倉儲及相關服務。'] },
-      { title: ['2. Customer obligations', '2. 客户责任', '2. 客戶責任'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
-      { title: ['3. Liability limits', '3. 责任限额', '3. 責任限額'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
-      { title: ['4. Claims and time limits', '4. 索赔及时限', '4. 索償及時限'], body: ['Details pending client confirmation.', '具体内容待客户确认。', '具體內容待客戶確認。'] },
-    ],
-  },
-];
-
 function LegalPage() {
   const { t } = useI18n();
   const { legalId } = useParams();
   const page = legalPages.find((item) => item.id === legalId);
   if (!page) return <NotFound />;
-  return <><PageHero eyebrow={t(['Legal', '法律信息', '法律資訊'])} title={t(page.name)} intro={t(page.intro)} /><section className="section"><div className="container detail-layout"><aside><p>{t(['Legal', '法律信息', '法律資訊'])}</p>{legalPages.map((item) => <NavLink key={item.id} to={`/legal/${item.id}`}>{t(item.name)}</NavLink>)}</aside><article className="legal-body"><p className="legal-note">{t(['Draft for review. Final text to be supplied by Magni Technology Limited.', '草稿待审阅，最终文本由 Magni Technology Limited 提供。', '草稿待審閱，最終文本由 Magni Technology Limited 提供。'])}</p>{page.sections.map((section) => <section key={section.title[0]}><h2>{t(section.title)}</h2><p>{t(section.body)}</p></section>)}</article></div></section></>;
+  return <><PageHero eyebrow={t(['Legal', '法律信息', '法律資訊'])} title={t(page.name)} intro={t(page.intro)} /><section className="section"><div className="container detail-layout"><aside><p>{t(['Legal', '法律信息', '法律資訊'])}</p>{legalPages.map((item) => <NavLink key={item.id} to={`/legal/${item.id}`}>{t(item.name)}</NavLink>)}</aside><article className="legal-body"><p className="legal-updated">{t(page.updated)}</p>{page.sections.map((section) => <section key={section.title[0]}><h2>{t(section.title)}</h2>{section.paragraphs.map((paragraph) => <p key={paragraph[0]}>{t(paragraph)}</p>)}</section>)}</article></div></section></>;
 }
 
 function NotFound() {

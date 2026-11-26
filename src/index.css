@@ -603,3 +603,7 @@ html { scroll-padding-top: 130px; }
 .map-card-photo { padding: 8px 8px 0; aspect-ratio: auto; overflow: visible; }
 .map-card-photo .photo-clip { overflow: hidden; aspect-ratio: 16 / 10; }
 .map-card-photo .photo-clip img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* legal pages: last-updated line and spacing between paragraphs */
+.legal-body .legal-updated { margin: 0 0 30px; color: #55696f; font-size: 13px; }
+.legal-body section p + p { margin-top: 12px; }
