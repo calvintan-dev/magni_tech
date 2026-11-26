@@ -12,7 +12,7 @@ export type LegalSection = { title: Copy; paragraphs: Copy[] };
 export type LegalPage = { id: string; name: Copy; intro: Copy; updated: Copy; sections: LegalSection[] };
 
 const UPDATED: Copy = ['Last updated: 26 November 2026', '最后更新：2026年11月26日', '最後更新：2026年11月26日'];
-const EMAIL = 'hello@magni-logistics.com'; // placeholder, same as the site's contact email
+const EMAIL = 'janesong@magnibuys.com'; // same as the site's contact email
 
 export const legalPages: LegalPage[] = [
   {
@@ -34,7 +34,7 @@ export const legalPages: LegalPage[] = [
       {
         title: ['2. Personal data we collect', '2. 我们收集的个人资料', '2. 我們收集的個人資料'],
         paragraphs: [
-          ['When you request a quote, contact us or book a shipment, we collect your name, company, job title, email address, phone and WhatsApp number, and the shipment details you give us, such as origin, destination, cargo description and consignee details.', '当您询价、联系我们或预订货运时，我们会收集您的姓名、公司、职位、电邮地址、电话及 WhatsApp 号码，以及您提供的货运资料，例如起运地、目的地、货物描述及收货人资料。', '當您詢價、聯絡我們或預訂貨運時，我們會收集您的姓名、公司、職位、電郵地址、電話及 WhatsApp 號碼，以及您提供的貨運資料，例如起運地、目的地、貨物描述及收貨人資料。'],
+          ['When you request a quote, contact us or book a shipment, we collect your name, company, job title, email address or phone number, and the shipment details you give us, such as origin, destination, cargo description and consignee details.', '当您询价、联系我们或预订货运时，我们会收集您的姓名、公司、职位、电邮地址或电话号码，以及您提供的货运资料，例如起运地、目的地、货物描述及收货人资料。', '當您詢價、聯絡我們或預訂貨運時，我們會收集您的姓名、公司、職位、電郵地址或電話號碼，以及您提供的貨運資料，例如起運地、目的地、貨物描述及收貨人資料。'],
           ['When you use the tracking page, we use the shipment or booking number you enter only to show its status.', '使用追踪页面时，您输入的运单或订舱编号只会用于显示货物状态。', '使用追蹤頁面時，您輸入的運單或訂艙編號只會用於顯示貨物狀態。'],
         ],
       },
@@ -134,7 +134,7 @@ export const legalPages: LegalPage[] = [
       {
         title: ['7. Links to other websites', '7. 外部链接', '7. 外部連結'],
         paragraphs: [
-          ['Links to other websites, including WhatsApp, are provided for convenience. We are not responsible for their content or privacy practices.', '本网站提供的外部链接（包括 WhatsApp）仅为方便用户，我们不对其内容或私隐措施负责。', '本網站提供的外部連結（包括 WhatsApp）僅為方便用戶，我們不對其內容或私隱措施負責。'],
+          ['Links to other websites are provided for convenience. We are not responsible for their content or privacy practices.', '本网站提供的外部链接仅为方便用户，我们不对其内容或私隐措施负责。', '本網站提供的外部連結僅為方便用戶，我們不對其內容或私隱措施負責。'],
         ],
       },
       {

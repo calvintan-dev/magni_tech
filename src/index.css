@@ -36,7 +36,6 @@ button { border: 0; cursor: pointer; }
 .utility-inner { display: flex; height: 100%; align-items: center; justify-content: space-between; }
 .utility-inner p { margin: 0; }
 .utility-inner div { display: flex; align-items: center; gap: 15px; }
-.utility-separator { height: 10px; width: 1px; background: #53707a; }
 .navbar { height: 82px; display: flex; align-items: center; gap: 40px; }
 .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); background: none; padding: 0; text-align: left; flex-shrink: 0; }
 .brand-mark { width: 39px; height: 39px; display: grid; place-items: center; background: var(--navy); color: white; position: relative; overflow: hidden; }
@@ -229,14 +228,6 @@ footer { padding-top: 65px; color: #b8c8cc; background: var(--navy-deep); }
 .footer-bottom button { padding: 0; color: inherit; background: none; font-size: inherit; }
 .footer-bottom nav a { color: #b8c8cc; font-size: 11px; transition: color .2s; }
 .footer-bottom nav a:hover, .footer-bottom nav a:focus-visible { color: white; text-decoration: underline; text-underline-offset: 3px; }
-/* WhatsApp click-to-chat */
-.whatsapp-link { display: inline-flex; align-items: center; gap: 7px; }
-.button-whatsapp, .contact-card a.button-whatsapp { margin: 6px 0 4px; background: #25d366; color: #062a1a; font-weight: 600; gap: 10px; }
-.button-whatsapp:hover { background: #3ee07a; }
-.whatsapp-float { position: fixed; right: 24px; bottom: 24px; z-index: 40; width: 56px; height: 56px; display: grid; place-items: center; border-radius: 50%; background: #25d366; color: #fff; box-shadow: 0 8px 24px rgba(7,31,42,.28); transition: transform .2s, background .2s; }
-.whatsapp-float:hover { background: #1ebe5b; transform: translateY(-2px); }
-.whatsapp-float:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-@media (max-width: 600px) { .whatsapp-float { right: 16px; bottom: 16px; width: 50px; height: 50px; } }
 .legal-body { max-width: 760px; }
 .legal-note { margin: 0 0 30px; padding: 14px 18px; border-left: 3px solid #d87946; background: #f8efe7; color: #73492d; font-size: 13px; line-height: 1.7; }
 .legal-body section + section { margin-top: 30px; }

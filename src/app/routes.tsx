@@ -15,17 +15,9 @@ import { legalPages } from './legal';
 
 type Language = 'en' | 'zh-CN' | 'zh-HK';
 type Copy = [string, string, string];
-type IconName = 'arrow' | 'box' | 'check' | 'chevron' | 'clock' | 'globe' | 'menu' | 'plane' | 'route' | 'search' | 'ship' | 'truck' | 'warehouse' | 'whatsapp' | 'x' | 'chip' | 'gear' | 'cart' | 'snow' | 'crane';
+type IconName = 'arrow' | 'box' | 'check' | 'chevron' | 'clock' | 'globe' | 'menu' | 'plane' | 'route' | 'search' | 'ship' | 'truck' | 'warehouse' | 'x' | 'chip' | 'gear' | 'cart' | 'snow' | 'crane';
 
-// WhatsApp click-to-chat. Number in international format, digits only.
-// PLACEHOLDER: uses the office line until the client confirms a WhatsApp number.
-const WHATSAPP_NUMBER = '85239052188';
-const whatsappLink = (message: string) => `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-const whatsappGreeting: Copy = [
-  'Hello Magni, I would like to ask about a shipment.',
-  '您好 Magni，我想咨询货运服务。',
-  '您好 Magni，我想查詢貨運服務。',
-];
+const CONTACT_EMAIL = 'janesong@magnibuys.com';
 
 const LanguageContext = createContext<{ language: Language; setLanguage: (language: Language) => void }>({
   language: 'en',
@@ -52,7 +44,6 @@ const iconPaths: Record<IconName, ReactNode> = {
   cart: <><path d="M2 3h3l3 13h12l2-9H6" /><circle cx="9" cy="20" r="1" /><circle cx="18" cy="20" r="1" /></>,
   snow: <path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7M9 4l3 3 3-3M9 20l3-3 3 3M4 10l4-1-1-4M17 19l-1-4 4-1M4 14l4 1-1 4M17 5l-1 4 4 1" />,
   crane: <path d="M3 22V3h18M6 3l12 8H3l12-8M7 11v11M3 22h8M18 3v13M16 16h4v4h-4z" />,
-  whatsapp: <><path d="M3.5 20.5 4.8 16A8.5 8.5 0 1 1 8 19.2l-4.5 1.3Z" /><path d="M9.2 8.2c-.3 3.4 3.2 6.9 6.6 6.6l.9-1.6-1.9-1-1 .9a4.8 4.8 0 0 1-2.6-2.6l.9-1-1-1.9-1.9.6Z" /></>,
 };
 
 function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
@@ -145,7 +136,7 @@ function TranslatedLayout({ menuOpen, setMenuOpen, languageOpen, setLanguageOpen
   return (
     <div className="site-shell">
       <header className="header">
-        <div className="utility-bar"><div className="container utility-inner"><p>{t(['Hong Kong connected. Asia delivered.', '立足香港，畅达亚洲。', '立足香港，暢達亞洲。'])}</p><div><span>{t(['24/7 operations desk', '全天候运营支持', '全天候營運支援'])}</span><span className="utility-separator" /><span>+852 3905 2188</span></div></div></div>
+        <div className="utility-bar"><div className="container utility-inner"><p>{t(['Hong Kong connected. Asia delivered.', '立足香港，畅达亚洲。', '立足香港，暢達亞洲。'])}</p><div><span>{t(['24/7 operations desk', '全天候运营支持', '全天候營運支援'])}</span></div></div></div>
         <nav className="container navbar" aria-label={t(['Main navigation', '主导航', '主導覽'])}>
           <Link to="/" aria-label="Magni Technology Limited home"><Brand /></Link>
           <div className={`nav-links ${menuOpen ? 'is-open' : ''}`}>
@@ -180,7 +171,6 @@ function TranslatedLayout({ menuOpen, setMenuOpen, languageOpen, setLanguageOpen
         </nav>
       </header>
       <main><Outlet context={{ openQuote }} /></main>
-      <a className="whatsapp-float" href={whatsappLink(t(whatsappGreeting))} target="_blank" rel="noopener noreferrer" aria-label={t(['Chat with us on WhatsApp', '通过 WhatsApp 联系我们', '透過 WhatsApp 聯絡我們'])} title="WhatsApp"><Icon name="whatsapp" size={26} /></a>
       <Footer />
     </div>
   );
@@ -192,7 +182,7 @@ function Footer() {
     <div className="container footer-main">
       <div className="footer-brand"><Brand inverse /><p>{t(['Integrated logistics across China, Hong Kong and Southeast Asia.', '连接中国内地、香港及东南亚的一体化物流服务。', '連接中國內地、香港及東南亞的一體化物流服務。'])}</p></div>
       <div className="footer-nav"><strong>{t(['Explore', '探索', '探索'])}</strong><Link to="/services">{t(['Services', '服务', '服務'])}</Link><Link to="/network">{t(['Network', '网络覆盖', '網絡覆蓋'])}</Link><Link to="/about">{t(['About us', '关于我们', '關於我們'])}</Link></div>
-      <div className="footer-nav"><strong>{t(['Contact', '联系', '聯絡'])}</strong><a href="tel:+85239052188">+852 3905 2188</a><a href="mailto:hello@magni-logistics.com">hello@magni-logistics.com</a><a className="whatsapp-link" href={whatsappLink(t(whatsappGreeting))} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={15} />WhatsApp</a><span>{t(['Hong Kong SAR', '中国香港特别行政区', '中國香港特別行政區'])}</span></div>
+      <div className="footer-nav"><strong>{t(['Contact', '联系', '聯絡'])}</strong><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a><span>{t(['Hong Kong SAR', '中国香港特别行政区', '中國香港特別行政區'])}</span></div>
     </div>
     <div className="container footer-bottom"><span>© 2026 Magni Technology Limited</span><nav aria-label={t(['Legal', '法律信息', '法律資訊'])}>{legalPages.map((page) => <Link key={page.id} to={`/legal/${page.id}`}>{t(page.name)}</Link>)}<Link to="/credits">{t(['Photo credits', '图片来源', '圖片來源'])}</Link></nav></div>
   </footer>;
@@ -525,7 +515,7 @@ function AboutPage() {
 
 function ContactPage() {
   const { t } = useI18n();
-  return <><PageHero eyebrow={t(['Contact', '联系我们', '聯絡我們'])} title={t(['Talk to a logistics specialist.', '与物流专员沟通。', '與物流專員溝通。'])} intro={t(['Our Hong Kong team is ready to help with your next move.', '我们的香港团队随时协助您的下一票货运。', '我們的香港團隊隨時協助您的下一票貨運。'])} /><section className="section"><div className="container contact-grid"><div className="contact-card"><p className="eyebrow">{t(['Hong Kong office', '香港办公室', '香港辦公室'])}</p><h2>Magni Technology Limited</h2><p>{t(['Hong Kong SAR', '中国香港特别行政区', '中國香港特別行政區'])}</p><a href="tel:+85239052188">+852 3905 2188</a><a href="mailto:hello@magni-logistics.com">hello@magni-logistics.com</a><a className="button button-whatsapp" href={whatsappLink(t(whatsappGreeting))} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={18} />{t(['Chat on WhatsApp', 'WhatsApp 咨询', 'WhatsApp 查詢'])}</a><span>{t(['Mon–Fri · 09:00–18:00 HKT', '周一至周五 · 09:00–18:00 香港时间', '週一至週五 · 09:00–18:00 香港時間'])}</span></div><ContactForm /></div></section></>;
+  return <><PageHero eyebrow={t(['Contact', '联系我们', '聯絡我們'])} title={t(['Talk to a logistics specialist.', '与物流专员沟通。', '與物流專員溝通。'])} intro={t(['Our Hong Kong team is ready to help with your next move.', '我们的香港团队随时协助您的下一票货运。', '我們的香港團隊隨時協助您的下一票貨運。'])} /><section className="section"><div className="container contact-grid"><div className="contact-card"><p className="eyebrow">{t(['Hong Kong office', '香港办公室', '香港辦公室'])}</p><h2>Magni Technology Limited</h2><p>{t(['Hong Kong SAR', '中国香港特别行政区', '中國香港特別行政區'])}</p><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a><span>{t(['Mon–Fri · 09:00–18:00 HKT', '周一至周五 · 09:00–18:00 香港时间', '週一至週五 · 09:00–18:00 香港時間'])}</span></div><ContactForm /></div></section></>;
 }
 
 function ContactForm() {
