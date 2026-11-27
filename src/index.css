@@ -121,8 +121,8 @@ button { border: 0; cursor: pointer; }
 .badge-row { margin-top: 30px; padding-top: 22px; border-top: 1px solid #cbd7d4; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .badge-label { margin-right: 10px; color: #55696f; font: 600 10px/1 Manrope, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
 .badge { min-height: 34px; padding: 0 14px; display: inline-flex; align-items: center; border: 1px solid #b9c9c5; background: rgba(255,255,255,.6); color: var(--ink); font: 700 12px/1 Manrope, sans-serif; letter-spacing: .06em; }
-.trust-grid div { padding: 0 32px; border-left: 1px solid #cbd7d4; display: flex; flex-direction: column; }
-.trust-grid div:first-child { padding-left: 0; border-left: 0; }
+.trust-grid div { padding: 0 16px; border-left: 1px solid #cbd7d4; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.trust-grid div:first-child { border-left: 0; }
 .trust-grid strong { font: 600 25px/1 Manrope, sans-serif; letter-spacing: -.04em; }
 .trust-grid span { color: #55696f; margin-top: 7px; font-size: 11px; }
 
@@ -399,7 +399,7 @@ footer { padding-top: 65px; color: #b8c8cc; background: var(--navy-deep); }
   .tracking-panel { grid-template-columns: 1fr 1.6fr; }
   .track-message { display: none; }
   .trust-grid { grid-template-columns: repeat(3, 1fr); gap: 28px 0; }
-  .trust-grid div:nth-child(4) { padding-left: 0; border-left: 0; }
+  .trust-grid div:nth-child(4) { border-left: 0; }
   .hero-foot { bottom: 72px; }
   .section-heading { grid-template-columns: 1fr; gap: 20px; }
   .network-section { grid-template-columns: 1fr; }
@@ -430,8 +430,8 @@ footer { padding-top: 65px; color: #b8c8cc; background: var(--navy-deep); }
   .hero h1 { font-size: 38px; }
   .hero-foot { display: none; }
   .trust-grid { grid-template-columns: repeat(2, 1fr); }
-  .trust-grid div:nth-child(4) { padding-left: 15px; border-left: 1px solid #cbd7d4; }
-  .trust-grid div:nth-child(odd) { padding-left: 0; border-left: 0; }
+  .trust-grid div:nth-child(4) { border-left: 1px solid #cbd7d4; }
+  .trust-grid div:nth-child(odd) { border-left: 0; }
   .badge-label { width: 100%; margin-bottom: 4px; }
   .hero-copy { font-size: 14px; }
   .hero-actions { align-items: flex-start; flex-direction: column; gap: 15px; }
